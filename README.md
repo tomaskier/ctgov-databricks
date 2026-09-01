@@ -81,5 +81,6 @@ This workspace is **Databricks Free Edition**, the newer serverless-based replac
 
 ## Status
 
-Phase 0 (workspace verification) complete. Phase 1 (repo scaffold) complete — pushed to GitHub,
-synced into the workspace as a Git folder. Phase 2 (extract to landing) in progress.
+Phase 0 (workspace verification) complete. Phase 1 (repo scaffold) complete. Phase 2 (extract to
+landing) complete — verified end-to-end against the real API. Phase 3 (bronze via Auto Loader) in
+progress.
