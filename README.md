@@ -18,7 +18,7 @@ Workflows — rather than relearning the domain from scratch.
 ClinicalTrials.gov API v2
         |  extract.py (same pagination/watermark logic as the original, ported to Databricks)
         v
-   Landing zone (DBFS)   raw JSON pages
+   Landing zone (UC Volume: workspace.ctgov.landing)   raw JSON pages
         |  Auto Loader (cloudFiles, trigger(availableNow=True)) — the "streaming" layer
         v
    Bronze   Delta table, page-level (one row per landed file, not flattened)
@@ -55,10 +55,31 @@ usdm overlay`.
   hash-based keys (e.g. `sha2(concat_ws(':', nct_id, version_identifier), 256)`) — a deliberate
   improvement (idempotent reruns, no lookup round-trip), not just a workaround.
 
-## Community Edition constraints (verified, not assumed)
+## Databricks Free Edition — what's actually true here (verified in Phase 0)
 
-_Filled in during Phase 0 — see the plan for what's being checked._
+This workspace is **Databricks Free Edition**, the newer serverless-based replacement for the old
+"Community Edition" — several assumptions from earlier CE docs don't hold here:
+
+- **Compute is serverless by default** — `Default Interactive Compute` (notebooks) and
+  `Default Automated Compute` (Jobs) come pre-provisioned. No manual cluster sizing, and no
+  auto-termination-kills-a-scheduled-job concern the way classic clusters had.
+- **Unity Catalog is on**, not the legacy Hive metastore — three catalogs exist out of the box
+  (`workspace`, `system`, `samples`). We use `workspace.ctgov` as our schema.
+- **The public DBFS root is disabled** (`DBFS_DISABLED` on any `dbfs:/...` write) — governance
+  default on UC-enabled workspaces. File storage uses a **Unity Catalog Volume** instead:
+  `workspace.ctgov.landing`, created via `CREATE VOLUME`, written/read through the same
+  `dbutils.fs.*` calls but at `/Volumes/workspace/ctgov/landing/...` paths.
+- **Databricks Repos is now "Git folders"** in the UI, reached via Workspace → Create/right-click
+  → "Git folder", not a dedicated "Repos" sidebar entry.
+- **`%pip install -e .` reports success but isn't reliably importable on serverless** — even
+  before a kernel restart. Rather than fight it, notebooks add `src/` to `sys.path` directly:
+  ```python
+  import sys
+  sys.path.insert(0, "/Workspace/Users/<you>/ctgov-databricks/src")
+  from ctgov_databricks import config
+  ```
 
 ## Status
 
-Phase 0 (workspace verification) in progress.
+Phase 0 (workspace verification) complete. Phase 1 (repo scaffold) complete — pushed to GitHub,
+synced into the workspace as a Git folder. Phase 2 (extract to landing) in progress.
