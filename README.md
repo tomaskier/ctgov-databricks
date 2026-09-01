@@ -82,5 +82,6 @@ This workspace is **Databricks Free Edition**, the newer serverless-based replac
 ## Status
 
 Phase 0 (workspace verification) complete. Phase 1 (repo scaffold) complete. Phase 2 (extract to
-landing) complete — verified end-to-end against the real API. Phase 3 (bronze via Auto Loader) in
+landing) complete. Phase 3 (bronze via Auto Loader) complete — verified end-to-end, 6/6 pages
+landed correctly with `page` ordinal for Silver's dedup ordering. Phase 4 (silver merge) in
 progress.
