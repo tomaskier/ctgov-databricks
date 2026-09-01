@@ -1,0 +1,1 @@
+-- Phase 5 — USDM overlay tables, ported from clinicaltrials_pipeline/sql/usdm_schema.sql. Not yet implemented.

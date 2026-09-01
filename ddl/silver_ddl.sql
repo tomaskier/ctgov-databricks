@@ -1,0 +1,1 @@
+-- Phase 4 — trials/sponsors/locations/interventions/outcomes/etl_runs, ported from clinicaltrials_pipeline/sql/schema.sql. Not yet implemented.
