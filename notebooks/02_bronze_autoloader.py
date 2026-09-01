@@ -22,10 +22,12 @@ raw = (
     .load(LANDING_PATH)
 )
 
-bronze = raw.withColumn(
-    "condition", regexp_extract(col("_metadata.file_path"), r"/landing/([^/]+)/", 1)
-).withColumn(
-    "run_id", regexp_extract(col("_metadata.file_path"), r"/landing/[^/]+/([^/]+)/", 1)
+bronze = (
+    raw.withColumn("condition", regexp_extract(col("_metadata.file_path"), r"/landing/([^/]+)/", 1))
+    .withColumn("run_id", regexp_extract(col("_metadata.file_path"), r"/landing/[^/]+/([^/]+)/", 1))
+    # page ordinal from the filename - Silver's dedup needs this to replicate the original's
+    # "last-page-wins" semantics (studies_by_id dict overwritten in page_0000, page_0001, ... order)
+    .withColumn("page", regexp_extract(col("_metadata.file_path"), r"page_(\d+)\.json$", 1).cast("int"))
 )
 
 # COMMAND ----------
